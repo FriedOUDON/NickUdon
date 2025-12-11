@@ -19,7 +19,7 @@ errors:
   usage-prefix: "Usage: /%label% %sub% [player] <prefix | clear>"
   usage-subtitle: "Usage: /%label% %sub% [player] <text | clear | on | off>"
 payments:
-  insufficient: "You need &a%cost%&r to do that."
+  insufficient: "&cYou need &a%cost% &cto do that."
   charged: "Charged &a%cost%&r."
   no-economy: "Economy is not available."
 nickname:
