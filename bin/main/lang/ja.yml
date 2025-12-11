@@ -1,7 +1,0 @@
-hello.self: "こんにちは、%player%！"
-hello.to: "%player% から %target% へ、こんにちは！"
-join.welcome: "うどん鯖へようこそ！ ”/name 付けたい名前”でいつでもニックネームを変更できます。"
-reloaded: "設定と言語ファイルを再読込しました。"
-current-locale: "あなたの言語は %locale% に設定されました。"
-no-permission: "権限がありません。"
-unknown-subcommand: "不明なサブコマンドです。"

@@ -1,20 +1,92 @@
-# デフォルト色（エイリアスに色指定が無い場合）
+# Extra aliases for /nickudon (e.g., ["nu", "nick"])
+commandAliases: ["nu"]
+
+# Default colors when no color code is provided
 defaultAliasColor: AQUA
+defaultPrefixColor: GRAY
 
-# 表示名（タブ/チャットの displayName に使用）
-# 利用可トークン: %original%, %alias%, %aliasC%, %reset%
-nameFormat: "%original%%aliasC%[%alias%]%reset%"
+# Broadcast settings
+broadcast:
+  alias:
+    # Permission required to see alias change broadcasts (blank = send to everyone)
+    permission: "nickudon.broadcast.alias"
+  prefix:
+    permission: "nickudon.broadcast.prefix"
+  subtitle:
+    permission: "nickudon.broadcast.subtitle"
 
-# チャットの「名前」部分
-chatNameFormat: "%aliasC%%alias%%reset%(%original%)"
-chatNameFormatNoAlias: "(%original%)"
+# Bedrock (Geyser/Floodgate) handling
+bedrock:
+  # If true, hex colors (#RRGGBB) are reduced to legacy 16 colors for Bedrock players
+  hexDownsample: true
+  # If true, name tags / subtitles also downsample when any Bedrock player is online
+  downsampleNametagWhenBedrockOnline: true
+  # If true, subtitles downsample when any Bedrock player is online (independent toggle)
+  downsampleSubtitleWhenBedrockOnline: true
 
-# 衝突判定のルール
+# Economy charges (Vault)
+payments:
+  enabled: false
+  # Bypass permissions (only checked when payments.enabled is true):
+  # - nickudon.payments.bypass.alias
+  # - nickudon.payments.bypass.prefix
+  # - nickudon.payments.bypass.subtitle
+  alias:
+    set: 0.0
+    clear: 0.0
+  prefix:
+    set: 0.0
+    clear: 0.0
+  subtitle:
+    set: 0.0
+    clear: 0.0
+    enable: 0.0
+    disable: 0.0
+
+# Display name (placeholders: %original%, %alias%, %aliasC%, %prefix%, %prefixC%, %reset%)
+nameFormat: "%prefix%%original%%aliasC%[%alias%]%reset%"
+nameFormatNoAlias: "%prefix%%original%"
+
+# Chat name formats
+chatNameFormat: "%prefix%%aliasC%%alias%%reset%(%original%)"
+chatNameFormatNoAlias: "%prefix%%original%"
+
+# Chat override (set false to keep server default chat formatting)
+chatOverride:
+  enabled: true
+
+# Display name override for join/quit messages
+displayOverride:
+  onJoinQuit: true
+
+# Prefix format (placeholders: %prefix%, %prefixC%, %reset%)
+prefixFormat: "%prefixC%%prefix%%reset% "
+
+# Subtitle (second nametag line)
+subtitle:
+  enabled: true
+  # Placeholders: %subtitle%, %prefix%, %prefixC%, %alias%, %aliasC%, %original%, %reset%
+  format: "%subtitle%"
+  defaultColor: LIME
+  # Vertical offset from the top of the player hitbox
+  yOffset: 0.35
+  # Extra spacing above the vanilla name tag
+  nameTagOffset: 0.5
+  # How often to refresh subtitle text/position (ticks)
+  updateTicks: 4
+  # View distance for the text display
+  viewRange: 48
+
+# Alias uniqueness rules
 aliasUnique:
+  enabled: true
   ignoreColor: true
   caseInsensitive: true
   normalizeNFKC: true
   denySameAsOriginal: true
 
-# dynmap 反映のための遅延再適用 tick（20=1秒）
+# dynmap resync ticks (0 = 1 second)
 resyncTicks: [0, 40, 60]
+
+# Default message locale. Leave blank to follow the server/JVM locale.
+defaultLocale: ""
