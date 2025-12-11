@@ -1,0 +1,20 @@
+# デフォルト色（エイリアスに色指定が無い場合）
+defaultAliasColor: AQUA
+
+# 表示名（タブ/チャットの displayName に使用）
+# 利用可トークン: %original%, %alias%, %aliasC%, %reset%
+nameFormat: "%original%%aliasC%[%alias%]%reset%"
+
+# チャットの「名前」部分
+chatNameFormat: "%aliasC%%alias%%reset%(%original%)"
+chatNameFormatNoAlias: "(%original%)"
+
+# 衝突判定のルール
+aliasUnique:
+  ignoreColor: true
+  caseInsensitive: true
+  normalizeNFKC: true
+  denySameAsOriginal: true
+
+# dynmap 反映のための遅延再適用 tick（20=1秒）
+resyncTicks: [0, 40, 60]

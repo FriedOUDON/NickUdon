@@ -1,0 +1,9 @@
+hello:
+  self: "Hello, %player%!"
+  to: "Hello, %target%!"
+reloaded: "Configuration reloaded."
+no-permission: "You don't have permission."
+unknown-subcommand: "Unknown subcommand."
+current-locale: "Current locale: %locale%"
+join:
+  welcome: "Welcome, %player%!"

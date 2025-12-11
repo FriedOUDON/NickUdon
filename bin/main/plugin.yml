@@ -1,0 +1,19 @@
+name: testHelloPlugin
+main: com.FriedOUDON.hello.HelloPlugin
+version: 1.0.0
+api-version: "1.21"
+softdepend: [dynmap]
+
+commands:
+  hello:
+    description: Say hello / admin / nickname
+    usage: "/hello [name|nick|alias|rename] <alias|clear> | reload | lang <code>"
+    permission: hello.use
+
+permissions:
+  hello.use:
+    default: true
+  hello.admin:
+    default: op
+  hello.nickname:
+    default: true

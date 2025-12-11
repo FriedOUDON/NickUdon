@@ -1,0 +1,47 @@
+plugins {
+    id 'java'
+    //id "org.gradle.toolchains.foojay-resolver-convention" version "0.9.0"
+}
+
+group = 'com.FriedOUDON'
+def versionFile = file("version.txt")
+version = versionFile.text.trim()
+def pluginVersion = version
+
+repositories {
+    mavenCentral()
+    maven { url = uri("https://repo.papermc.io/repository/maven-public/") }
+    maven { url = uri("https://repo.extendedclip.com/content/repositories/placeholderapi/") }
+    maven { url = uri("https://jitpack.io") }
+}
+
+dependencies {
+    compileOnly "io.papermc.paper:paper-api:1.21.8-R0.1-SNAPSHOT"
+    compileOnly "me.clip:placeholderapi:2.11.6"
+    compileOnly("com.github.MilkBowl:VaultAPI:1.7") {
+        exclude group: "org.bukkit", module: "bukkit"
+    }
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+tasks.processResources {
+    inputs.property("pluginVersion", pluginVersion)
+    filesMatching("plugin.yml") {
+        expand(version: pluginVersion)
+    }
+}
+
+tasks.register('copyJarToPlugins', Copy) {
+    dependsOn tasks.build
+    from layout.buildDirectory.file("libs/${project.name}-${project.version}.jar")
+    into "M:/minecraft_server/101_sirosaba/java/plugins" // ←環境に合わせて
+}
