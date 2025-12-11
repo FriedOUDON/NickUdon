@@ -1,6 +1,6 @@
 # NickUdon
 
-Paper/Spigot plugin for nicknames, prefixes, and a second nametag line with chat/display formatting, PlaceholderAPI hooks, and multi-lang messages.
+Paper plugin for nicknames, prefixes, and a second nametag line with chat/display formatting, PlaceholderAPI hooks, and multi-lang messages.
 
 ## Highlights
 - Nickname/prefix with color codes, default colors, and uniqueness checks.
