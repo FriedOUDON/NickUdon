@@ -31,14 +31,17 @@ public class NickUdonExpansion extends PlaceholderExpansion {
     @Override
     public @Nullable String onPlaceholderRequest(Player p, @NotNull String params) {
         if (p == null) return "";
+        String alias = plugin.names().getAlias(p.getUniqueId());
+        String prefix = plugin.names().getPrefix(p.getUniqueId());
+        boolean bedrockSafe = plugin.names().shouldDownsampleNametag();
         String lower = params.toLowerCase();
 
         return switch (lower) {
-            case "alias" -> nullToEmpty(plugin.names().getAlias(p.getUniqueId()));
-            case "alias_stripped" -> ChatColor.stripColor(nullToEmpty(plugin.names().getAlias(p.getUniqueId())));
-            case "prefix" -> nullToEmpty(plugin.names().getPrefix(p.getUniqueId()));
-            case "display" -> p.getDisplayName();
-            case "display_no_prefix" -> plugin.names().format(p, p.getName(), plugin.names().getAlias(p.getUniqueId()), "");
+            case "alias" -> nullToEmpty(alias);
+            case "alias_stripped" -> ChatColor.stripColor(nullToEmpty(alias));
+            case "prefix" -> nullToEmpty(prefix);
+            case "display" -> plugin.names().format(p, p.getName(), alias, prefix, bedrockSafe);
+            case "display_no_prefix" -> plugin.names().format(p, p.getName(), alias, "", bedrockSafe);
             case "name" -> p.getName();
             default -> null;
         };
