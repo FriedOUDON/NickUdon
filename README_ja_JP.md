@@ -40,6 +40,7 @@ Paper 向けのニックネーム・プレフィックス・2 行目サブタイ
 ## PlaceholderAPI プレースホルダー
 - `%nickudon_alias%`, `%nickudon_alias_stripped%`
 - `%nickudon_prefix%`
+- `%nickudon_chat%`
 - `%nickudon_display%`, `%nickudon_display_no_prefix%`
 - `%nickudon_name%`
 

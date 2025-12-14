@@ -42,6 +42,7 @@ public class NickUdonExpansion extends PlaceholderExpansion {
             case "prefix" -> nullToEmpty(prefix);
             case "display" -> plugin.names().format(p, p.getName(), alias, prefix, bedrockSafe);
             case "display_no_prefix" -> plugin.names().format(p, p.getName(), alias, "", bedrockSafe);
+            case "chat" -> plugin.names().formatChatName(p, p.getName(), alias, prefix);
             case "name" -> p.getName();
             default -> null;
         };
