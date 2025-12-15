@@ -1,6 +1,6 @@
 name: NickUdon
 main: com.FriedOUDON.NickUdon.HelloPlugin
-version: 1.0.1-SNAPSHOT
+version: 1.0.1
 api-version: "1.21"
 softdepend: [dynmap, PlaceholderAPI]
 
