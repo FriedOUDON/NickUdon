@@ -5,6 +5,7 @@ Paper plugin for nicknames, prefixes, and a second nametag line with chat/displa
 ## Highlights
 - Nickname/prefix with color codes (legacy `&` and RGB hex `#RRGGBB`), default colors, and uniqueness checks.
 - Subtitle (second nametag line) with color codes (legacy/hex) and PlaceholderAPI support.
+- UTF-8 multibyte friendly—use Japanese and other languages as-is.
 - Configurable display/chat formats, join/quit overrides, and scoreboard nametag updates.
 - Bedrock-friendly hex downsampling options.
 - Lang files auto-copied/overridable under `plugins/NickUdon/lang/`.
