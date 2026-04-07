@@ -1,5 +1,4 @@
-<<<<<<< HEAD
 .gradle/
-=======
-.gradle
->>>>>>> 7e6985efed241f7555269579c0bae04f73b35aac
+build/
+paper/build/
+fabric/build/

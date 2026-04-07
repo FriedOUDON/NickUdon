@@ -1,0 +1,67 @@
+name: NickUdon
+main: com.FriedOUDON.NickUdon.HelloPlugin
+version: ${version}
+api-version: "1.21"
+softdepend: [dynmap, PlaceholderAPI]
+
+commands:
+  nickudon:
+    description: NickUdon main command (nickname/prefix/subtitle)
+    usage: "/nickudon [name|nick|alias|rename] [player] <alias|clear> | prefix [player] <prefix|clear> | subtitle [player] <text|clear> | reload | lang <code>"
+    permission: nickudon.use
+    aliases: []
+  name:
+    description: Alias for /nickudon name
+    usage: "/name [player] <alias|clear>"
+    permission: nickudon.use
+
+permissions:
+  nickudon.use:
+    default: true
+  nickudon.admin:
+    default: op
+  nickudon.broadcast.*:
+    default: op
+    children:
+      nickudon.broadcast.alias: true
+      nickudon.broadcast.prefix: true
+      nickudon.broadcast.subtitle: true
+  nickudon.broadcast.alias:
+    default: op
+  nickudon.broadcast.prefix:
+    default: op
+  nickudon.broadcast.subtitle:
+    default: op
+  nickudon.nickname:
+    default: true
+  nickudon.nickname.others:
+    default: op
+  nickudon.prefix:
+    default: op
+  nickudon.prefix.others:
+    default: op
+  nickudon.subtitle:
+    default: true
+  nickudon.subtitle.others:
+    default: op
+  nickudon.payments.bypass.*:
+    default: op
+    children:
+      nickudon.payments.bypass.alias: true
+      nickudon.payments.bypass.prefix: true
+      nickudon.payments.bypass.subtitle: true
+      nickudon.payments.bypass.alias.others: true
+      nickudon.payments.bypass.prefix.others: true
+      nickudon.payments.bypass.subtitle.others: true
+  nickudon.payments.bypass.alias:
+    default: false
+  nickudon.payments.bypass.alias.others:
+    default: false
+  nickudon.payments.bypass.prefix:
+    default: false
+  nickudon.payments.bypass.prefix.others:
+    default: false
+  nickudon.payments.bypass.subtitle:
+    default: false
+  nickudon.payments.bypass.subtitle.others:
+    default: false

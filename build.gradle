@@ -1,47 +1,53 @@
 plugins {
-    id 'java'
-    //id "org.gradle.toolchains.foojay-resolver-convention" version "0.9.0"
+    id 'base'
 }
 
 group = 'com.FriedOUDON'
-def versionFile = file("version.txt")
-version = versionFile.text.trim()
-def pluginVersion = version
+version = file("version.txt").text.trim()
 
-repositories {
-    mavenCentral()
-    maven { url = uri("https://repo.papermc.io/repository/maven-public/") }
-    maven { url = uri("https://repo.extendedclip.com/content/repositories/placeholderapi/") }
-    maven { url = uri("https://jitpack.io") }
+ext {
+    paperApiVersion = '1.21.8-R0.1-SNAPSHOT'
+    placeholderApiVersion = '2.11.6'
+    vaultApiVersion = '1.7'
+
+    fabricLoomVersion = '1.13.4'
+    minecraftVersion = '1.21.11'
+    fabricLoaderVersion = '0.18.6'
+    yarnMappings = '1.21.11+build.4'
+    fabricApiVersion = '0.141.3+1.21.11'
+    fabricPermissionsApiVersion = '0.6.1'
+    patboxPlaceholderVersion = '2.8.2+1.21.10'
+    snakeYamlVersion = '2.6'
 }
 
-dependencies {
-    compileOnly "io.papermc.paper:paper-api:1.21.8-R0.1-SNAPSHOT"
-    compileOnly "me.clip:placeholderapi:2.11.6"
-    compileOnly("com.github.MilkBowl:VaultAPI:1.7") {
-        exclude group: "org.bukkit", module: "bukkit"
+allprojects {
+    group = rootProject.group
+    version = rootProject.version
+
+    repositories {
+        mavenCentral()
+        maven { url = uri("https://repo.papermc.io/repository/maven-public/") }
+        maven { url = uri("https://repo.extendedclip.com/content/repositories/placeholderapi/") }
+        maven { url = uri("https://jitpack.io") }
+        maven { url = uri("https://maven.fabricmc.net/") }
+        maven { url = uri("https://maven.nucleoid.xyz/") }
     }
 }
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+subprojects {
+    apply plugin: 'java'
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(21)
+        }
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = 'UTF-8'
     }
 }
 
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
-}
-
-tasks.processResources {
-    inputs.property("pluginVersion", pluginVersion)
-    filesMatching("plugin.yml") {
-        expand(version: pluginVersion)
-    }
-}
-
-tasks.register('copyJarToPlugins', Copy) {
-    dependsOn tasks.build
-    from layout.buildDirectory.file("libs/${project.name}-${project.version}.jar")
-    into "M:/minecraft_server/101_sirosaba/java/plugins" // ←環境に合わせて
+tasks.named('build') {
+    dependsOn(':paper:build', ':fabric:build')
 }

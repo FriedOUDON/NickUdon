@@ -1,0 +1,25 @@
+base {
+    archivesName = 'NickUdon'
+}
+
+dependencies {
+    implementation project(':common')
+
+    compileOnly "io.papermc.paper:paper-api:${rootProject.ext.paperApiVersion}"
+    compileOnly "me.clip:placeholderapi:${rootProject.ext.placeholderApiVersion}"
+    compileOnly("com.github.MilkBowl:VaultAPI:${rootProject.ext.vaultApiVersion}") {
+        exclude group: "org.bukkit", module: "bukkit"
+    }
+}
+
+tasks.named('processResources') {
+    inputs.property("pluginVersion", project.version)
+    filesMatching("plugin.yml") {
+        expand(version: project.version)
+    }
+}
+
+tasks.named('jar') {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from(project(':common').sourceSets.main.output)
+}

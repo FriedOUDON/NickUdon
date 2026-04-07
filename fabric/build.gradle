@@ -1,0 +1,38 @@
+plugins {
+    id 'fabric-loom' version '1.13.4'
+}
+
+base {
+    archivesName = 'NickUdon-fabric'
+}
+
+loom {
+    serverOnlyMinecraftJar()
+}
+
+dependencies {
+    implementation project(':common')
+    implementation "org.yaml:snakeyaml:${rootProject.ext.snakeYamlVersion}"
+
+    minecraft "com.mojang:minecraft:${rootProject.ext.minecraftVersion}"
+    mappings "net.fabricmc:yarn:${rootProject.ext.yarnMappings}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${rootProject.ext.fabricLoaderVersion}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${rootProject.ext.fabricApiVersion}"
+    modImplementation "me.lucko:fabric-permissions-api:${rootProject.ext.fabricPermissionsApiVersion}"
+    modImplementation "eu.pb4:placeholder-api:${rootProject.ext.patboxPlaceholderVersion}"
+
+    include "me.lucko:fabric-permissions-api:${rootProject.ext.fabricPermissionsApiVersion}"
+    include "org.yaml:snakeyaml:${rootProject.ext.snakeYamlVersion}"
+}
+
+tasks.named('processResources') {
+    inputs.property("modVersion", project.version)
+    filesMatching("fabric.mod.json") {
+        expand(version: project.version)
+    }
+}
+
+tasks.named('jar') {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from(project(':common').sourceSets.main.output)
+}

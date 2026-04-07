@@ -1,14 +1,38 @@
 # NickUdon
 
-Paper plugin for nicknames, prefixes, and a second nametag line with chat/display formatting, PlaceholderAPI hooks, and multi-lang messages.
+NickUdon is a multi-target Minecraft nickname/prefix/subtitle project for Paper and Fabric.
+Shared formatting, config, persistence, and localization logic lives in `common`, while platform-specific adapters live in `paper` and `fabric`.
+
+## Modules
+- `common`: shared formatter, profile repository, config access abstraction, and localized message handling
+- `paper`: Paper plugin entrypoint, PlaceholderAPI integration, Vault-backed payments, Bukkit/Paper events
+- `fabric`: Fabric mod entrypoint, Patbox Text Placeholder API integration, Fabric commands/events, no economy integration
 
 ## Highlights
-- Nickname/prefix with color codes (legacy `&` and RGB hex `#RRGGBB`), default colors, and uniqueness checks.
-- Subtitle (second nametag line) with color codes (legacy/hex) and PlaceholderAPI support.
-- UTF-8 multibyte friendly—use Japanese and other languages as-is.
-- Configurable display/chat formats, join/quit overrides, and scoreboard nametag updates.
-- Bedrock-friendly hex downsampling options.
-- Lang files auto-copied/overridable under `plugins/NickUdon/lang/`.
+- Nicknames, prefixes, and a second nametag line (subtitle)
+- Legacy `&` colors and RGB hex `#RRGGBB`
+- Configurable display/chat formats
+- Alias uniqueness checks with configurable normalization rules
+- Multi-language messages with bundled `en_US` and `ja_JP`
+- Join/quit display overrides and broadcast messages
+- Shared config defaults across Paper and Fabric
+
+## Platform Notes
+
+### Paper
+- Built as a Paper plugin for the 1.21 API line
+- Optional PlaceholderAPI integration for external placeholders
+- Optional Vault integration for economy-backed payments
+- Config directory: `plugins/NickUdon/`
+
+### Fabric
+- Current target: Minecraft `1.21.11`
+- Supports Fabric Loader `0.18.4` through `0.18.x`
+- Requires `fabric-api` and Patbox `placeholder-api` in the server `mods/` directory
+- No economy integration; payment-related settings and bypass permissions are Paper-only
+- Supports external permission providers through `fabric-permissions-api-v0`
+- LuckPerms works as a permission provider on Fabric; without a provider, permission checks fall back to the built-in defaults (`true` or operator level)
+- Config directory: `config/nickudon/`
 
 ## Commands
 - `/nickudon name|nick|alias|rename [player] <alias|clear>`
@@ -19,34 +43,77 @@ Paper plugin for nicknames, prefixes, and a second nametag line with chat/displa
 - `/name ...` (shorthand for `/nickudon name ...`)
 
 ## Permissions
-- `nickudon.use` — basic use
-- `nickudon.admin` — admin + edit others
-- `nickudon.broadcast.*` (`alias`, `prefix`, `subtitle`) — see change broadcasts
+- `nickudon.use`
+- `nickudon.admin`
+- `nickudon.broadcast.*` (`alias`, `prefix`, `subtitle`)
 - `nickudon.nickname`, `nickudon.nickname.others`
 - `nickudon.prefix`, `nickudon.prefix.others`
 - `nickudon.subtitle`, `nickudon.subtitle.others`
-- `nickudon.payments.bypass.*` (`alias`, `prefix`, `subtitle`, and their `.others` variants) — skip costs when payments are enabled
+- `nickudon.payments.bypass.*` (`alias`, `prefix`, `subtitle`, and their `.others` variants)
 
-## Config highlights (`plugins/NickUdon/config.yml`)
-- `nameFormat`, `chatNameFormat`, `prefixFormat`, alias-less variants
-- `commandAliases` — extra aliases for `/nickudon`
-- `defaultAliasColor`, `defaultPrefixColor`, `subtitle.defaultColor`
-- `subtitle.*` — format, offsets, updateTicks, viewRange
-- `chatOverride.enabled`, `displayOverride.onJoinQuit`
-- `aliasUnique.*` — uniqueness rules
-- `payments.*` — Vault costs per action (bypass via permissions above)
-- `defaultLocale` — fallback locale
-- `bedrock.*` — hex downsampling toggles
+Paper exposes these permissions through `plugin.yml`.
+Fabric uses `fabric-permissions-api-v0`. If a provider such as LuckPerms is installed, these permission nodes are checked there. Otherwise, Fabric falls back to the built-in defaults used by the mod.
 
-## Placeholders (PlaceholderAPI)
+## Build
+
+### Requirements
+- Java `21`
+
+### Commands
+- Build both targets: `.\gradlew build`
+- Build Paper only: `.\gradlew :paper:build`
+- Build Fabric only: `.\gradlew :fabric:build`
+
+### Output
+- Paper JAR: `paper/build/libs/NickUdon-<version>.jar`
+- Fabric JAR: `fabric/build/libs/NickUdon-fabric-<version>.jar`
+
+## Installation
+
+### Paper
+1. Build `:paper:build`
+2. Put `paper/build/libs/NickUdon-<version>.jar` into `plugins/`
+3. Install PlaceholderAPI if you want external placeholder expansion
+4. Install Vault plus an economy plugin only if you want `payments.*` to be active
+
+### Fabric
+Requirements:
+- Fabric Loader `0.18.4` through `0.18.x`
+
+1. Build `:fabric:build`
+2. Put `fabric/build/libs/NickUdon-fabric-<version>.jar` into `mods/`
+3. Also install:
+   - `fabric-api-0.141.3+1.21.11.jar`
+   - `placeholder-api-2.8.2+1.21.10.jar` or newer
+   - LuckPerms or another Fabric permission provider if you want non-OP permission management
+4. Start a Minecraft `1.21.11` Fabric server
+
+## Config And Lang Files
+- Shared default resources are packaged from `common/src/main/resources/`
+- Paper runtime files live under `plugins/NickUdon/`
+- Fabric runtime files live under `config/nickudon/`
+- External `lang/<locale>.yml` files override bundled resources on both platforms
+
+## Placeholders
+
+### Paper PlaceholderAPI
 - `%nickudon_alias%`, `%nickudon_alias_stripped%`
 - `%nickudon_prefix%`
 - `%nickudon_chat%`
 - `%nickudon_display%`, `%nickudon_display_no_prefix%`
 - `%nickudon_name%`
 
-## Lang files
-- Bundled `lang/en_US.yml`, `lang/ja_JP.yml`; external copies in `plugins/NickUdon/lang/` override bundled ones.
+### Fabric Patbox Text Placeholder API
+NickUdon registers these placeholder identifiers:
+- `nickudon:alias`
+- `nickudon:alias_stripped`
+- `nickudon:prefix`
+- `nickudon:chat`
+- `nickudon:display`
+- `nickudon:display_no_prefix`
+- `nickudon:name`
+
+Use them with the syntax supported by the installed Patbox Text Placeholder API version.
 
 ## License
 - GPL-3.0-or-later
