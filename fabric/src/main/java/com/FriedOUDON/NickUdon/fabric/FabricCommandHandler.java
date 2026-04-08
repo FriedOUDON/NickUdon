@@ -2,6 +2,7 @@ package com.FriedOUDON.NickUdon.fabric;
 
 import com.FriedOUDON.NickUdon.common.LegacyTextUtil;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.tree.LiteralCommandNode;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
@@ -29,21 +30,31 @@ final class FabricCommandHandler {
     }
 
     void register(CommandDispatcher<ServerCommandSource> dispatcher) {
-        registerLiteral(dispatcher, "nickudon");
+        LiteralCommandNode<ServerCommandSource> primary = registerLiteral(dispatcher, "nickudon");
         registerLiteral(dispatcher, "name");
 
-        for (String alias : mod.config().getStringList("commandAliases")) {
-            if (alias == null || alias.isBlank() || alias.equalsIgnoreCase("nickudon")) continue;
-            registerLiteral(dispatcher, alias.trim().toLowerCase(Locale.ROOT));
+        for (String alias : configuredAliases()) {
+            if (alias == null || alias.isBlank()) continue;
+            String normalized = alias.trim().toLowerCase(Locale.ROOT);
+            if (normalized.equals("nickudon") || normalized.equals("name")) continue;
+            dispatcher.register(CommandManager.literal(normalized)
+                    .requires(source -> mod.hasPermission(source, "nickudon.use"))
+                    .redirect(primary));
         }
     }
 
-    private void registerLiteral(CommandDispatcher<ServerCommandSource> dispatcher, String literal) {
-        dispatcher.register(CommandManager.literal(literal)
+    private LiteralCommandNode<ServerCommandSource> registerLiteral(CommandDispatcher<ServerCommandSource> dispatcher, String literal) {
+        return dispatcher.register(CommandManager.literal(literal)
+                .requires(source -> mod.hasPermission(source, "nickudon.use"))
                 .executes(ctx -> execute(ctx.getSource(), literal, ""))
                 .then(CommandManager.argument("args", StringArgumentType.greedyString())
                         .suggests((ctx, builder) -> suggest(ctx.getSource(), literal, builder))
                         .executes(ctx -> execute(ctx.getSource(), literal, StringArgumentType.getString(ctx, "args")))));
+    }
+
+    private List<String> configuredAliases() {
+        List<String> aliases = mod.config().getStringList("commandAliases");
+        return aliases.isEmpty() ? List.of("nu") : aliases;
     }
 
     private CompletableFuture<Suggestions> suggest(ServerCommandSource source, String literal, SuggestionsBuilder builder) {

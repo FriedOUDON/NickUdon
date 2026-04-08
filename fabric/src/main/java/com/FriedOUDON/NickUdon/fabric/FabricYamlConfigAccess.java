@@ -41,7 +41,7 @@ final class FabricYamlConfigAccess implements MutableConfigAccess {
         return access;
     }
 
-    static ConfigAccess fromReader(Reader reader, Consumer<String> logger) {
+    static FabricYamlConfigAccess fromReader(Reader reader, Consumer<String> logger) {
         try {
             Object loaded = createYaml().load(reader);
             return new FabricYamlConfigAccess(null, logger, createYaml(), asMap(loaded));
@@ -158,6 +158,13 @@ final class FabricYamlConfigAccess implements MutableConfigAccess {
         }
     }
 
+    boolean mergeMissing(FabricYamlConfigAccess defaults) {
+        if (defaults == null) {
+            return false;
+        }
+        return mergeMissing(root, defaults.root);
+    }
+
     private Object getValue(String path) {
         if (path == null || path.isBlank()) return root;
 
@@ -196,6 +203,27 @@ final class FabricYamlConfigAccess implements MutableConfigAccess {
             return out;
         }
         return value;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static boolean mergeMissing(Map<String, Object> target, Map<String, Object> defaults) {
+        boolean changed = false;
+        for (Map.Entry<String, Object> entry : defaults.entrySet()) {
+            String key = entry.getKey();
+            Object defaultValue = normalize(entry.getValue());
+            Object currentValue = target.get(key);
+
+            if (currentValue == null) {
+                target.put(key, defaultValue);
+                changed = true;
+                continue;
+            }
+
+            if (currentValue instanceof Map<?, ?> currentMap && defaultValue instanceof Map<?, ?> defaultMap) {
+                changed |= mergeMissing((Map<String, Object>) currentMap, (Map<String, Object>) defaultMap);
+            }
+        }
+        return changed;
     }
 
     private static Yaml createYaml() {

@@ -4,7 +4,6 @@ import com.FriedOUDON.NickUdon.common.LegacyTextUtil;
 import com.mojang.authlib.GameProfile;
 import eu.pb4.placeholders.api.PlaceholderResult;
 import eu.pb4.placeholders.api.Placeholders;
-import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
@@ -50,6 +49,7 @@ public final class NickUdonFabric implements ModInitializer {
         ensureDefaults();
 
         this.config = FabricYamlConfigAccess.fromFile(baseDir().resolve("config.yml"), this::warn);
+        mergeBundledConfigDefaults();
         this.names = new FabricNameService(this);
         this.messages = new FabricMessageService(this);
         this.subtitles = new FabricSubtitleService(this);
@@ -114,26 +114,11 @@ public final class NickUdonFabric implements ModInitializer {
     }
 
     boolean hasPermission(ServerCommandSource source, String permission) {
-        if (permission == null || permission.isBlank()) return true;
-        if (isGrantedByDefault(permission)) {
-            return Permissions.check(source, permission, true);
-        }
-        return Permissions.check(source, permission, 2);
+        return NickUdonPermissions.check(source, permission);
     }
 
     boolean hasPermission(ServerPlayerEntity player, String permission) {
-        if (permission == null || permission.isBlank()) return true;
-        if (isGrantedByDefault(permission)) {
-            return Permissions.check(player, permission, true);
-        }
-        return Permissions.check(player, permission, 2);
-    }
-
-    private boolean isGrantedByDefault(String permission) {
-        return switch (permission) {
-            case "nickudon.use", "nickudon.nickname", "nickudon.subtitle" -> true;
-            default -> false;
-        };
+        return NickUdonPermissions.check(player, permission);
     }
 
     Reader openBundledText(String resourcePath) {
@@ -147,7 +132,10 @@ public final class NickUdonFabric implements ModInitializer {
     }
 
     private void registerLifecycle() {
-        ServerLifecycleEvents.SERVER_STARTED.register(server -> this.server = server);
+        ServerLifecycleEvents.SERVER_STARTED.register(server -> {
+            this.server = server;
+            NickUdonPermissions.primeKnownNodes(server);
+        });
         ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
             subtitles.shutdown();
             this.server = null;
@@ -263,6 +251,20 @@ public final class NickUdonFabric implements ModInitializer {
             if (input == null) return;
             Files.createDirectories(target.getParent());
             Files.copy(input, target);
+        }
+    }
+
+    private void mergeBundledConfigDefaults() {
+        try (Reader reader = openBundledText("config.yml")) {
+            if (reader == null) {
+                return;
+            }
+            FabricYamlConfigAccess defaults = FabricYamlConfigAccess.fromReader(reader, this::warn);
+            if (config.mergeMissing(defaults)) {
+                config.save();
+            }
+        } catch (IOException e) {
+            warn("Failed to merge bundled config defaults: " + e.getMessage());
         }
     }
 
