@@ -58,8 +58,10 @@ final class FabricMessageService {
 
         Path external = mod.baseDir().resolve("lang").resolve(code + ".yml");
         if (Files.exists(external)) {
-            try (Reader reader = Files.newBufferedReader(external, StandardCharsets.UTF_8)) {
-                messages.putBundle(code, FabricYamlConfigAccess.fromReader(reader, mod::warn));
+            try {
+                FabricYamlConfigAccess access = FabricYamlConfigAccess.fromFile(external, mod::warn);
+                mergeBundledDefaults(code, access);
+                messages.putBundle(code, access);
             } catch (Exception e) {
                 mod.warn("Failed to read lang/" + code + ".yml: " + e.getMessage());
             }
@@ -72,6 +74,21 @@ final class FabricMessageService {
             }
         } catch (Exception e) {
             mod.warn("Failed to load bundled lang/" + code + ".yml: " + e.getMessage());
+        }
+    }
+
+    private void mergeBundledDefaults(String code, FabricYamlConfigAccess external) {
+        try (Reader reader = mod.openBundledText("lang/" + code + ".yml")) {
+            if (reader == null) {
+                return;
+            }
+
+            FabricYamlConfigAccess defaults = FabricYamlConfigAccess.fromReader(reader, mod::warn);
+            if (external.mergeMissing(defaults)) {
+                external.save();
+            }
+        } catch (Exception e) {
+            mod.warn("Failed to merge bundled lang/" + code + ".yml: " + e.getMessage());
         }
     }
 

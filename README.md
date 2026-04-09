@@ -40,6 +40,7 @@ Shared formatting, config, persistence, and localization logic lives in `common`
 - `/nickudon subtitle [player] <text|clear|on|off>`
 - `/nickudon reload`
 - `/nickudon lang <code>`
+- `/nickudon cleanupsubtitles` (Fabric only, admin only, removes orphan subtitle armor stands from older builds)
 - `/name ...` (shorthand for `/nickudon name ...`)
 
 ## Permissions
@@ -87,6 +88,7 @@ Requirements:
    - `placeholder-api-2.8.2+1.21.10.jar` or newer
    - LuckPerms or another Fabric permission provider if you want non-OP permission management
 4. Start a Minecraft `1.21.11` Fabric server
+5. If older Fabric subtitle armor stands are left behind, stand near them and run `/nickudon cleanupsubtitles`
 
 ## Config And Lang Files
 - Shared default resources are packaged from `common/src/main/resources/`

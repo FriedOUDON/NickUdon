@@ -41,6 +41,7 @@ subtitle:
   cleared-by: "%actor%&r によって肩書きがクリアされました。"
   cleared-self: "肩書きをクリアしました。"
   cleared-other: "%target% の肩書きをクリアしました。"
+  cleanup-orphans: "&a残留した肩書き用防具立てを %count% 個削除しました。"
   set-by-other: "%actor%&r によって肩書きが %formatted%&r に設定されました。"
   set-other: "%target% の肩書きを %formatted%&r に設定しました。"
   set-self: "肩書きを %formatted%&r に設定しました。"

@@ -67,7 +67,7 @@ final class FabricCommandHandler {
 
     private CompletableFuture<Suggestions> suggestMain(ServerCommandSource source, CompletionContext completion) {
         if (completion.index() == 0) {
-            return completion.suggest(List.of("reload", "name", "nick", "alias", "rename", "prefix", "subtitle", "lang"));
+            return completion.suggest(List.of("reload", "name", "nick", "alias", "rename", "prefix", "subtitle", "lang", "cleanupsubtitles"));
         }
 
         String sub = completion.token(0).toLowerCase(Locale.ROOT);
@@ -231,6 +231,16 @@ final class FabricCommandHandler {
             String code = args[1];
             mod.messages().setPlayerLocaleOverride(player.getUuid(), code);
             send(player, mod.messages().get(player, "current-locale", Map.of("locale", code)));
+            return 1;
+        }
+
+        if ("cleanupsubtitles".equals(sub)) {
+            if (!mod.hasPermission(source, "nickudon.admin")) {
+                sendError(source, msg(source, "no-permission", null));
+                return 0;
+            }
+            int removed = mod.subtitles().cleanupLegacyOrphans(source);
+            send(source, msg(source, "subtitle.cleanup-orphans", Map.of("count", Integer.toString(removed))));
             return 1;
         }
 

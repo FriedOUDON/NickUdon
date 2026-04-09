@@ -107,6 +107,7 @@ public final class NickUdonFabric implements ModInitializer {
         subtitles.reload();
 
         if (server == null) return;
+        subtitles.onServerStarted(server);
         for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()) {
             names.applyDisplay(player);
             subtitles.refresh(player);
@@ -135,6 +136,7 @@ public final class NickUdonFabric implements ModInitializer {
         ServerLifecycleEvents.SERVER_STARTED.register(server -> {
             this.server = server;
             NickUdonPermissions.primeKnownNodes(server);
+            subtitles.onServerStarted(server);
         });
         ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
             subtitles.shutdown();
@@ -175,7 +177,7 @@ public final class NickUdonFabric implements ModInitializer {
 
         ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register((player, origin, destination) -> {
             names.applyDisplay(player);
-            subtitles.refresh(player);
+            subtitles.onPlayerWorldChange(player);
         });
 
         ServerMessageEvents.ALLOW_CHAT_MESSAGE.register((message, sender, params) -> {

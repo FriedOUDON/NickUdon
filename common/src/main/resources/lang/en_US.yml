@@ -41,6 +41,7 @@ subtitle:
   cleared-by: "Your subtitle was cleared by %actor%&r."
   cleared-self: "Subtitle cleared."
   cleared-other: "Subtitle cleared for %target%."
+  cleanup-orphans: "&aRemoved %count% orphan subtitle armor stands."
   set-by-other: "Your subtitle was set to %formatted%&r by %actor%&r."
   set-other: "Set subtitle for %target%: %formatted%&r"
   set-self: "Set subtitle: %formatted%&r"
